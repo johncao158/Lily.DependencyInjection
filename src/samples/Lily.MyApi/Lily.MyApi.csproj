@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Lily.DependencyInjection\Lily.DependencyInjection.csproj" />
+    <ProjectReference Include="..\Lily.Module1\Lily.Module1.csproj" />
+    <ProjectReference Include="..\Lily.Module2\Lily.Module2.csproj" />
+  </ItemGroup>
+
+</Project>
