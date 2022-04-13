@@ -18,4 +18,20 @@ namespace Lily.Module1
             return _option1.Value;
         }
     }
+
+    [DependencyInjection(Ignored = true)]
+    public class IgnoredHello : Hello
+    {
+        public IgnoredHello(IOptionsMonitor<Option1> options) : base(options)
+        {
+        }
+    }
+
+    [Transient]
+    public class TransitHello : Hello
+    {
+        public TransitHello(IOptionsMonitor<Option1> options) : base(options)
+        {
+        }
+    }
 }

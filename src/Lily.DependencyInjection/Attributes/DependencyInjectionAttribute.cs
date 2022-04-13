@@ -48,6 +48,11 @@ namespace Lily.DependencyInjection
         /// Gets the <see cref="ServiceLifetime"/>.
         /// </summary>
         public ServiceLifetime Lifetime { get; }
+
+        /// <summary>
+        /// Gets or sets a <see cref="bool"/> value to indicate whether to ignore this injection attribute.
+        /// </summary>
+        public bool Ignored { get; set; }
     }
 
     /// <summary>

@@ -10,11 +10,13 @@ namespace Lily.MyApi.Controllers
     {
         private readonly IHello _hello;
         private readonly IWorld _world;
+        private readonly IgnoredHello _ignoredHello;
 
-        public TestController(IHello hello, IWorld world)
+        public TestController(IHello hello, IWorld world, IgnoredHello ignoredHello)
         {
             _hello = hello;
             _world = world;
+            _ignoredHello = ignoredHello;
         }
 
         [HttpGet]

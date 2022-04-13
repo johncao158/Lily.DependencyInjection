@@ -60,50 +60,16 @@ namespace Lily.DependencyInjection
                     continue;
                 }
 
-                var attrs = Attribute.GetCustomAttributes(type, true);
-                foreach (var attr in attrs)
+                var isDependencyInjectAttributeLoaded = false;
+                var isDependsOnAttributeLoaded = false;
+
+                // check attributes that are not inherited
+                LoadAttributes(Attribute.GetCustomAttributes(type, false));
+
+                // check inherited attributes
+                if (!isDependencyInjectAttributeLoaded || !isDependsOnAttributeLoaded)
                 {
-                    if (attr is DependencyInjectionAttribute diAttribute)
-                    {
-                        var lifetime = diAttribute.Lifetime;
-                        if (diAttribute.ServiceType == null)
-                        {
-                            // add for interfaces
-                            type.FindInterfaces((serviceType, obj) =>
-                            {
-                                var implementationType = (Type)obj!;
-                                if (interfaceFilter(serviceType, implementationType))
-                                {
-                                    if (serviceType.IsGenericType)
-                                    {
-                                        serviceType = serviceType.GetGenericTypeDefinition();
-                                    }
-
-                                    services.TryAdd(serviceType, implementationType, lifetime);
-
-                                    return true;
-                                }
-                                return false;
-                            }, type);
-
-                            // add type
-                            services.TryAdd(type, type, lifetime);
-                        }
-                        else
-                        {
-                            services.TryAdd(diAttribute.ServiceType, type, lifetime);
-                        }
-                    }
-                    else if (attr is DependsOnAttribute dependsAttribute)
-                    {
-                        foreach (var dependedType in dependsAttribute.DependedTypes)
-                        {
-                            if (dependedType != null)
-                            {
-                                Load(services, dependedType.Assembly, configuration, filter);
-                            }
-                        }
-                    }
+                    LoadAttributes(Attribute.GetCustomAttributes(type, true));
                 }
 
                 // load module
@@ -123,6 +89,74 @@ namespace Lily.DependencyInjection
                     }
                     catch (Exception)
                     {
+                    }
+                }
+
+                void LoadAttributes(IEnumerable<Attribute> attributes)
+                {
+                    foreach (var attr in attributes)
+                    {
+                        if (attr is DependencyInjectionAttribute diAttribute)
+                        {
+                            if (isDependencyInjectAttributeLoaded)
+                            {
+                                continue;
+                            }
+
+                            if (diAttribute.Ignored)
+                            {
+                                isDependencyInjectAttributeLoaded =true;
+                                continue;
+                            }
+
+                            var lifetime = diAttribute.Lifetime;
+                            if (diAttribute.ServiceType == null)
+                            {
+                                // add for interfaces
+                                type.FindInterfaces((serviceType, obj) =>
+                                {
+                                    var implementationType = (Type)obj!;
+                                    if (interfaceFilter(serviceType, implementationType))
+                                    {
+                                        if (serviceType.IsGenericType)
+                                        {
+                                            serviceType = serviceType.GetGenericTypeDefinition();
+                                        }
+
+                                        services.TryAdd(serviceType, implementationType, lifetime);
+
+                                        return true;
+                                    }
+                                    return false;
+                                }, type);
+
+                                // add type
+                                services.TryAdd(type, type, lifetime);
+                            }
+                            else
+                            {
+                                services.TryAdd(diAttribute.ServiceType, type, lifetime);
+                            }
+
+                            isDependencyInjectAttributeLoaded = true;
+                        }
+                        else if (attr is DependsOnAttribute dependsAttribute)
+                        {
+                            if (isDependsOnAttributeLoaded)
+                            {
+                                continue;
+                            }
+
+                            foreach (var dependedType in dependsAttribute.DependedTypes)
+                            {
+                                if (dependedType != null)
+                                {
+                                    Load(services, dependedType.Assembly, configuration, filter);
+                                }
+                            }
+
+                            isDependsOnAttributeLoaded = true;
+                        }
                     }
                 }
             }
