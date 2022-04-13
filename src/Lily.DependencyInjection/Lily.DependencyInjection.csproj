@@ -9,10 +9,11 @@
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryUrl>https://github.com/johncao158/Lily.DependencyInjection</RepositoryUrl>
 		<PackageTags>lily;dependency injection</PackageTags>
-		<PackageReleaseNotes>Publish 1.0.0</PackageReleaseNotes>
+		<PackageReleaseNotes>Enables to replace the inherited attributes and ignore the inherited dependency injection attributes.</PackageReleaseNotes>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<Version>$(VersionPrefix)1.0.1</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
